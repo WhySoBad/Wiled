@@ -24,8 +24,7 @@ export class Color {
   constructor(color: string | RGB | HSL) {
     if (
       typeof color === 'string' &&
-      (color.match(/^#(?:[0-9a-fA-F]{3}){1,2}$/) ||
-        color.match(/^(?:[0-9a-fA-F]{3}){1,2}$/))
+      color.match(/^#?(?:[0-9a-fA-F]{3}){1,2}$/)
     ) {
       this.hex = color.startsWith('#') ? color.substr(1) : color;
       this.rgb = Color.toRGB(this.hex) as any;
@@ -51,14 +50,11 @@ export class Color {
 
   public static toRGB(color: string | HSL): RGB | null {
     if (typeof color === 'string') {
-      if (
-        color.match(/^#(?:[0-9a-fA-F]{3}){1,2}$/) ||
-        color.match(/^(?:[0-9a-fA-F]{3}){1,2}$/)
-      )
-        return null;
+      if (!color.match(/^#?(?:[0-9a-fA-F]{3}){1,2}$/)) return null;
       const result: any = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(
         color,
       );
+      if (!result) return null;
       return {
         r: parseInt(result[1], 16),
         g: parseInt(result[2], 16),
@@ -104,11 +100,7 @@ export class Color {
 
   public static toHSL(color: RGB | string): HSL | null {
     if (typeof color === 'string') {
-      if (
-        color.match(/^#(?:[0-9a-fA-F]{3}){1,2}$/) ||
-        color.match(/^(?:[0-9a-fA-F]{3}){1,2}$/)
-      )
-        return null;
+      if (!color.match(/^#?(?:[0-9a-fA-F]{3}){1,2}$/)) return null;
     }
     let { r, g, b } =
       typeof color === 'string' ? (this.toRGB(color) as any) : color;
@@ -138,7 +130,7 @@ export class Color {
       h /= 6;
     }
 
-    return { h: h, s: s, l: l };
+    return { h: h * 360, s: s * 100, l: l * 100 };
   }
 
   /**

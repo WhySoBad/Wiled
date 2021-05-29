@@ -95,7 +95,8 @@ export class WiLED {
           g: this._color.g - 1 < 0 ? 255 : this._color.g - 1,
           b: this._color.b + 2 > 255 ? 0 : this._color.b + 2,
         };
-        console.log(Color.toHSL(this._color));
+        const hex: string = Color.toHex(this._color);
+        console.log(Color.toHSL(this._color), hex, Color.toRGB(hex));
       }
     }, /* 1000 / this.frequency */ 250);
   }
