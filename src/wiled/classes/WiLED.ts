@@ -1,5 +1,4 @@
-import rpio from 'rpio';
-import pigpio, { Gpio } from 'pigpio';
+import { Gpio } from 'pigpio';
 import { RGB } from '../../util/Types.types';
 import { WiLEDConstructor } from '../types/WiLED.types';
 
@@ -30,7 +29,7 @@ export class WiLED {
 
   constructor({
     frequency = 50,
-    pins = { r: 12, g: 13, b: 19 },
+    pins = { r: 13, g: 19, b: 12 },
   }: WiLEDConstructor) {
     this.frequency = frequency;
     this.pins = pins;
@@ -74,21 +73,6 @@ export class WiLED {
     this._gPin = new Gpio(this.pins.g, { mode: Gpio.OUTPUT });
     this._bPin = new Gpio(this.pins.b, { mode: Gpio.OUTPUT });
 
-    /*     rpio.init({
-      gpiomem: false,
-    });
-
-    rpio.open(this.pins.r, rpio.PWM);
-    rpio.open(this.pins.g, rpio.PWM);
-    rpio.open(this.pins.b, rpio.PWM);
-    rpio.pwmSetClockDivider(8);
-    rpio.pwmSetRange(this.pins.r, 255);
-    rpio.pwmSetRange(this.pins.g, 255);
-    rpio.pwmSetRange(this.pins.b, 255);
-    rpio.pwmSetData(this.pins.r, 0);
-    rpio.pwmSetData(this.pins.g, 0);
-    rpio.pwmSetData(this.pins.b, 0); */
-
     //init websockets
   }
 
@@ -105,9 +89,11 @@ export class WiLED {
         this._rPin.pwmWrite(this._color.r);
         this._gPin.pwmWrite(this._color.g);
         this._bPin.pwmWrite(this._color.b);
-        /* rpio.pwmSetData(this.pins.r, this._color.r);
-        rpio.pwmSetData(this.pins.g, this._color.g);
-        rpio.pwmSetData(this.pins.b, this._color.b); */
+        this._color = {
+          r: this._color.r + 0.25 > 255 ? 0 : this._color.r,
+          g: this._color.g + 0.25 > 255 ? 0 : this._color.g,
+          b: this._color.b + 0.25 > 255 ? 0 : this._color.b,
+        };
       }
     }, 1000 / this.frequency);
   }
@@ -123,8 +109,8 @@ export class WiLED {
   public stop(): void {
     this._running = false;
     clearInterval(this._interval);
-    /* rpio.pwmSetData(this.pins.r, 0);
-    rpio.pwmSetData(this.pins.g, 0);
-    rpio.pwmSetData(this.pins.b, 0); */
+    this._rPin.pwmWrite(0);
+    this._gPin.pwmWrite(0);
+    this._bPin.pwmWrite(0);
   }
 }

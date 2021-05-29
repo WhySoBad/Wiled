@@ -2,11 +2,6 @@ import { WiLED } from './wiled/classes/WiLED';
 
 const led = new WiLED({
   frequency: 60,
-  pins: {
-    r: 12,
-    g: 13,
-    b: 19,
-  },
 });
 
 led.start();
