@@ -2,7 +2,7 @@ import rpio, { PWM } from 'rpio';
 import { RGB } from '../../util/Types.types';
 import { WiLEDConstructor } from '../types/WiLED.types';
 
-export class Widi {
+export class WiLED {
   /**
    * Interval frequency in Hz [repetitions/second]
    */
@@ -23,7 +23,7 @@ export class Widi {
 
   constructor({
     frequency = 50,
-    pins = { r: 1, g: 1, b: 1 },
+    pins = { r: 12, g: 13, b: 19 },
   }: WiLEDConstructor) {
     this.frequency = frequency;
     this.pins = pins;

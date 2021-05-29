@@ -12,7 +12,7 @@ export interface WiLEDConstructor {
   /**
    * RGB GPIO pins which are connected
    *
-   * @default { r: 1, g: 1, b: 1 }
+   * @default { r: 12, g: 13, b: 19 }
    *
    */
 
