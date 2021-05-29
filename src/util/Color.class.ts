@@ -61,7 +61,10 @@ export class Color {
         b: parseInt(result[3], 16),
       };
     } else {
-      const { h, s, l } = color;
+      let { h, s, l } = color;
+      h /= 360;
+      s /= 100;
+      l /= 100;
       let r, g, b;
 
       if (s == 0) r = g = b = l;

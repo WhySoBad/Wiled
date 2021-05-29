@@ -1,6 +1,6 @@
 import { Gpio } from 'pigpio';
 import { Color } from '../../util/Color.class';
-import { RGB } from '../../util/Types.types';
+import { HSL, RGB } from '../../util/Types.types';
 import { WiLEDConstructor } from '../types/WiLED.types';
 
 export class WiLED {
@@ -16,7 +16,7 @@ export class WiLED {
 
   public readonly pins: RGB;
 
-  private _color: RGB;
+  private _color: Color;
 
   private _running: boolean;
 
@@ -41,7 +41,7 @@ export class WiLED {
    * Change current color
    */
 
-  public set setColor(color: RGB) {
+  public set setColor(color: Color) {
     this._color = color;
   }
 
@@ -49,7 +49,7 @@ export class WiLED {
    * Get current color
    */
 
-  public get color(): RGB {
+  public get color(): Color {
     return this._color;
   }
 
@@ -87,16 +87,13 @@ export class WiLED {
     this._running = true;
     this._interval = setInterval(() => {
       if (this._running) {
-        this._rPin.pwmWrite(this._color.r);
-        this._gPin.pwmWrite(this._color.g);
-        this._bPin.pwmWrite(this._color.b);
-        this._color = {
-          r: this._color.r + 1 > 255 ? 0 : this._color.r + 1,
-          g: this._color.g - 1 < 0 ? 255 : this._color.g - 1,
-          b: this._color.b + 2 > 255 ? 0 : this._color.b + 2,
-        };
-        const hex: string = Color.toHex(this._color);
-        console.log(Color.toHSL(this._color), hex, Color.toRGB(hex));
+        this._rPin.pwmWrite(this._color.rgb.r);
+        this._gPin.pwmWrite(this._color.rgb.g);
+        this._bPin.pwmWrite(this._color.rgb.b);
+        console.log(this._color.hex, this._color.rgb, this._color.hsl);
+
+        const hsl: HSL = this._color.hsl;
+        this._color = new Color({ ...hsl, h: hsl.h + 1 > 360 ? 0 : hsl.h + 1 });
       }
     }, /* 1000 / this.frequency */ 250);
   }
