@@ -1,3 +1,4 @@
+import { Color } from './util/Color.class';
 import { WiLED } from './wiled/classes/WiLED';
 
 const led = new WiLED({
@@ -6,8 +7,4 @@ const led = new WiLED({
 
 led.start();
 
-led.setColor = {
-  r: 255,
-  g: 0,
-  b: 0,
-};
+led.setColor = new Color({ r: 255, g: 0, b: 0 });
