@@ -1,4 +1,5 @@
 import { Gpio } from 'pigpio';
+import { Color } from '../../util/Color.class';
 import { RGB } from '../../util/Types.types';
 import { WiLEDConstructor } from '../types/WiLED.types';
 
@@ -94,8 +95,9 @@ export class WiLED {
           g: this._color.g - 1 < 0 ? 255 : this._color.g - 1,
           b: this._color.b + 2 > 255 ? 0 : this._color.b + 2,
         };
+        console.log(Color.toHSL(this._color));
       }
-    }, 1000 / this.frequency);
+    }, /* 1000 / this.frequency */ 250);
   }
 
   /**
