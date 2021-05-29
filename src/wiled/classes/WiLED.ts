@@ -90,9 +90,9 @@ export class WiLED {
         this._gPin.pwmWrite(this._color.g);
         this._bPin.pwmWrite(this._color.b);
         this._color = {
-          r: this._color.r + 0.25 > 255 ? 0 : this._color.r,
-          g: this._color.g + 0.25 > 255 ? 0 : this._color.g,
-          b: this._color.b + 0.25 > 255 ? 0 : this._color.b,
+          r: this._color.r + 0.25 > 255 ? 0 : this._color.r + 0.25,
+          g: this._color.g + 0.25 > 255 ? 0 : this._color.g + 0.25,
+          b: this._color.b + 0.25 > 255 ? 0 : this._color.b + 0.25,
         };
       }
     }, 1000 / this.frequency);
