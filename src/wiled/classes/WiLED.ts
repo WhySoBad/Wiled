@@ -1,4 +1,4 @@
-import rpio, { PWM } from 'rpio';
+import rpio from 'rpio';
 import { RGB } from '../../util/Types.types';
 import { WiLEDConstructor } from '../types/WiLED.types';
 
@@ -63,9 +63,13 @@ export class WiLED {
   private init(): void {
     //connect GPIO pins
 
-    rpio.open(this.pins.r, PWM);
-    rpio.open(this.pins.g, PWM);
-    rpio.open(this.pins.b, PWM);
+    rpio.open(this.pins.r, rpio.PWM);
+    rpio.open(this.pins.g, rpio.PWM);
+    rpio.open(this.pins.b, rpio.PWM);
+    rpio.pwmSetClockDivider(8);
+    rpio.pwmSetRange(this.pins.r, 255);
+    rpio.pwmSetRange(this.pins.g, 255);
+    rpio.pwmSetRange(this.pins.b, 255);
     rpio.pwmSetData(this.pins.r, 0);
     rpio.pwmSetData(this.pins.g, 0);
     rpio.pwmSetData(this.pins.b, 0);

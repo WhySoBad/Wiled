@@ -1,7 +1,7 @@
 {
-  "name": "widi",
+  "name": "wiled",
   "version": "1.0.0",
-  "description": "Wireless Dioder",
+  "description": "Wireless LED library for raspberry pi 4",
   "main": "src/index.ts",
   "scripts": {
     "start": "tsc && node dist/index.js"
