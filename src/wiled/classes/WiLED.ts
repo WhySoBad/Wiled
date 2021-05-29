@@ -1,4 +1,5 @@
 import rpio from 'rpio';
+import pigpio, { Gpio } from 'pigpio';
 import { RGB } from '../../util/Types.types';
 import { WiLEDConstructor } from '../types/WiLED.types';
 
@@ -20,6 +21,12 @@ export class WiLED {
   private _running: boolean;
 
   private _interval: NodeJS.Timeout;
+
+  private _rPin: Gpio;
+
+  private _gPin: Gpio;
+
+  private _bPin: Gpio;
 
   constructor({
     frequency = 50,
@@ -63,6 +70,14 @@ export class WiLED {
   private init(): void {
     //connect GPIO pins
 
+    this._rPin = new Gpio(this.pins.r, { mode: Gpio.OUTPUT });
+    this._gPin = new Gpio(this.pins.g, { mode: Gpio.OUTPUT });
+    this._bPin = new Gpio(this.pins.b, { mode: Gpio.OUTPUT });
+
+    /*     rpio.init({
+      gpiomem: false,
+    });
+
     rpio.open(this.pins.r, rpio.PWM);
     rpio.open(this.pins.g, rpio.PWM);
     rpio.open(this.pins.b, rpio.PWM);
@@ -72,7 +87,7 @@ export class WiLED {
     rpio.pwmSetRange(this.pins.b, 255);
     rpio.pwmSetData(this.pins.r, 0);
     rpio.pwmSetData(this.pins.g, 0);
-    rpio.pwmSetData(this.pins.b, 0);
+    rpio.pwmSetData(this.pins.b, 0); */
 
     //init websockets
   }
@@ -87,9 +102,12 @@ export class WiLED {
     this._running = true;
     this._interval = setInterval(() => {
       if (this._running) {
-        rpio.pwmSetData(this.pins.r, this._color.r);
+        this._rPin.pwmWrite(this._color.r);
+        this._gPin.pwmWrite(this._color.g);
+        this._bPin.pwmWrite(this._color.b);
+        /* rpio.pwmSetData(this.pins.r, this._color.r);
         rpio.pwmSetData(this.pins.g, this._color.g);
-        rpio.pwmSetData(this.pins.b, this._color.b);
+        rpio.pwmSetData(this.pins.b, this._color.b); */
       }
     }, 1000 / this.frequency);
   }
@@ -105,8 +123,8 @@ export class WiLED {
   public stop(): void {
     this._running = false;
     clearInterval(this._interval);
-    rpio.pwmSetData(this.pins.r, 0);
+    /* rpio.pwmSetData(this.pins.r, 0);
     rpio.pwmSetData(this.pins.g, 0);
-    rpio.pwmSetData(this.pins.b, 0);
+    rpio.pwmSetData(this.pins.b, 0); */
   }
 }
