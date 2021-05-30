@@ -29,7 +29,7 @@ export class Color {
       this.hex = color.startsWith('#') ? color.substr(1) : color;
       this.rgb = Color.toRGB(this.hex) as any;
       this.hsl = Color.toHSL(this.rgb) as any;
-    } else if ((color as any).r) {
+    } else if (Object.keys(color).includes('r')) {
       this.rgb = color as RGB;
       this.hex = Color.toHex(this.rgb);
       this.hsl = Color.toHSL(this.hex) as any;
@@ -141,7 +141,7 @@ export class Color {
    */
 
   public static toHex(color: RGB | HSL): string {
-    if ((color as any).r) {
+    if (Object.keys(color).includes('r')) {
       const { r, g, b } = color as any;
       return ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     } else {

@@ -16,7 +16,7 @@ export class WiLED {
 
   public readonly pins: RGB;
 
-  private _color: Color;
+  private _color: Color = new Color('#000000');
 
   private _running: boolean;
 
