@@ -284,7 +284,7 @@ export class WiLED {
         if (this._iteration < this.frequency) this._iteration++;
         else this._iteration = 0;
 
-        if (this._static) return;
+        if (this._static && !this._pulsating) return;
 
         const hsl: HSL = this._color.hsl;
 
@@ -326,7 +326,7 @@ export class WiLED {
           else if (l + sin < 0) l = 0;
         }
 
-        this._color = new Color({ h: h, s: s, l: l });
+        this._color = new Color({ h: this._static ? hsl.h : h, s: s, l: l });
       }
     }, 1000 / this.frequency);
   }
