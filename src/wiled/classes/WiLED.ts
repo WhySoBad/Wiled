@@ -319,9 +319,9 @@ export class WiLED {
 
         if (Math.round(this.speed) === 0) this._tempHue += this._speed;
 
-        let h: number = Math.round(
-          hsl.h + (this._reverse ? -this._tempHue : this._tempHue),
-        );
+        let h: number = this._reverse
+          ? Math.floor(hsl.h + this._tempHue)
+          : Math.ceil(hsl.h - this._tempHue);
 
         if (this._tempHue >= 1) this._tempHue -= 1;
 
