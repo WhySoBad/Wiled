@@ -121,7 +121,7 @@ export class WiLED {
    */
 
   public setPulsating(pulse: false | number, adjust: boolean = false): void {
-    if (typeof pulse === 'number' && (pulse < 50 || pulse < -50)) {
+    if (typeof pulse === 'number' && (pulse > 50 || pulse < -50)) {
       throw new Error('Pulse has to be in range of -50 and 50');
     } else {
       this._pulsating = pulse;
