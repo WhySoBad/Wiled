@@ -9,7 +9,7 @@ led.setSpeed(0.25);
 
 led.start();
 
-led.setColor(new Color({ r: 255, g: 0, b: 0 }), {
-  mode: 'AUTOREVERSE',
-  // pulsating: { pulse: 10, adjust: true },
+led.setColor(new Color({ r: 0, g: 255, b: 0 }), {
+  mode: 'NORMAL',
+  pulsating: { pulse: 10, adjust: true },
 });

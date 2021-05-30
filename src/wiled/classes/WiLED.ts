@@ -30,6 +30,8 @@ export class WiLED {
 
   private _pulsating: false | number = false;
 
+  private _pulseSpeed: number = 0.15;
+
   private _adjust: boolean = false;
 
   private _static: boolean = false;
@@ -38,7 +40,7 @@ export class WiLED {
 
   private _autoReverse: boolean = false;
 
-  private _speed: number;
+  private _speed: number = 1;
 
   //internal variables
 
@@ -107,6 +109,7 @@ export class WiLED {
       } else this.setPulsating(options.pulsating || false, false);
     }
     this._baseLight = color.hsl.l;
+    this._iteration = 0;
     this._tempHue = 0;
     this._color = color;
   }
@@ -130,6 +133,18 @@ export class WiLED {
       this._pulsating = pulse;
       this._adjust = adjust;
     }
+  }
+
+  /**
+   * Change speed of the pulse effect
+   *
+   * @param speed new speed
+   *
+   * @returns void
+   */
+
+  public setPulseSpeed(speed: number): void {
+    this._pulseSpeed = speed;
   }
 
   /**
@@ -201,6 +216,16 @@ export class WiLED {
 
   public get isPulsating(): boolean {
     return !!this._pulsating;
+  }
+
+  /**
+   * Speed of the pulse effect
+   *
+   * @default 1.5
+   */
+
+  public get pulseSpeed(): number {
+    return this._pulseSpeed;
   }
 
   /**
@@ -284,8 +309,9 @@ export class WiLED {
         this._bPin.pwmWrite(this._color.rgb.b);
         console.log(this._color.hex, this._color.rgb, this._color.hsl);
 
-        if (this._iteration < this.frequency) this._iteration++;
-        else this._iteration = 0;
+        if (this._iteration < Math.ceil((2 * Math.PI) / this._pulseSpeed)) {
+          this._iteration++;
+        } else this._iteration = 0;
 
         if (this._static && !this._pulsating) return;
 
@@ -316,7 +342,7 @@ export class WiLED {
 
         if (this._pulsating) {
           const a: number = this._pulsating;
-          const b: number = 0.5;
+          const b: number = this._pulseSpeed;
           let d: number = 0;
 
           if (this._adjust) {
