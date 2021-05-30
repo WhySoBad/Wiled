@@ -293,7 +293,7 @@ export class WiLED {
         );
 
         let s: number = hsl.s;
-        let l: number = hsl.l;
+        let l: number = this._baseLight;
 
         if (h > 360) {
           if (!this._reverse && this._autoReverse) {
@@ -324,6 +324,7 @@ export class WiLED {
 
           if (l + sin > 100) l = 100;
           else if (l + sin < 0) l = 0;
+          else l += sin;
         }
 
         this._color = new Color({ h: this._static ? hsl.h : h, s: s, l: l });
