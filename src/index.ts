@@ -7,4 +7,7 @@ const led = new WiLED({
 
 led.start();
 
-led.setColor = new Color({ r: 255, g: 0, b: 0 });
+led.setColor(new Color({ r: 255, g: 0, b: 0 }), {
+  mode: 'STATIC',
+  pulsating: { pulse: 10, adjust: true },
+});

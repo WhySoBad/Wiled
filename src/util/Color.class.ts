@@ -56,9 +56,9 @@ export class Color {
       );
       if (!result) return null;
       return {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
+        r: Math.round(parseInt(result[1], 16)),
+        g: Math.round(parseInt(result[2], 16)),
+        b: Math.round(parseInt(result[3], 16)),
       };
     } else {
       let { h, s, l } = color;
@@ -75,7 +75,7 @@ export class Color {
           if (t < 1 / 6) return p + (q - p) * 6 * t;
           if (t < 1 / 2) return q;
           if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-          return p;
+          return Math.round(p * 255);
         }
 
         var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
@@ -85,11 +85,7 @@ export class Color {
         g = toRGB(p, q, h);
         b = toRGB(p, q, h - 1 / 3);
       }
-      return {
-        r: r * 255,
-        g: g * 255,
-        b: b * 255,
-      };
+      return { r: r, g: g, b: b };
     }
   }
 

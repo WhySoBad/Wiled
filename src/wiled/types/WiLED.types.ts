@@ -18,3 +18,23 @@ export interface WiLEDConstructor {
 
   pins?: RGB;
 }
+
+export type EffectMode = 'STATIC' | 'REVERSE' | 'AUTOREVERSE' | 'NORMAL';
+
+export interface ColorOptions {
+  /**
+   * Mode of the effect
+   *
+   * @default "NORMAL"
+   */
+
+  mode?: EffectMode;
+
+  /**
+   * Whether the color should pulse or not
+   *
+   * @default false
+   */
+
+  pulsating?: false | number | { pulse: number; adjust: boolean };
+}
