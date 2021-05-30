@@ -11,5 +11,5 @@ led.start();
 
 led.setColor(new Color({ r: 255, g: 0, b: 0 }), {
   mode: 'AUTOREVERSE',
-  pulsating: { pulse: 10, adjust: true },
+  // pulsating: { pulse: 10, adjust: true },
 });

@@ -334,7 +334,11 @@ export class WiLED {
           else l += sin;
         }
 
-        this._color = new Color({ h: this._static ? hsl.h : h, s: s, l: l });
+        this._color = new Color({
+          h: this._static ? hsl.h : Math.abs(h),
+          s: s,
+          l: l,
+        });
       }
     }, 1000 / this.frequency);
   }
