@@ -46,6 +46,8 @@ export class WiLED {
 
   private _iteration: number = 0;
 
+  private _tempHue: number = 0;
+
   constructor({
     frequency = 50,
     pins = { r: 13, g: 19, b: 12 },
@@ -105,6 +107,7 @@ export class WiLED {
       } else this.setPulsating(options.pulsating || false, false);
     }
     this._baseLight = color.hsl.l;
+    this._tempHue = 0;
     this._color = color;
   }
 
@@ -288,9 +291,13 @@ export class WiLED {
 
         const hsl: HSL = this._color.hsl;
 
+        if (Math.round(this.speed) === 0) this._tempHue += this._speed;
+
         let h: number = Math.round(
-          hsl.h - (this._reverse ? this.speed : -this.speed),
+          hsl.h + (this._reverse ? -this._tempHue : this._tempHue),
         );
+
+        if (this._tempHue >= 1) this._tempHue -= 1;
 
         let s: number = hsl.s;
         let l: number = this._baseLight;
@@ -320,7 +327,7 @@ export class WiLED {
             }
           }
 
-          const sin: number = a * Math.sin(b * this._iteration) + d;
+          const sin: number = Math.round(a * Math.sin(b * this._iteration) + d);
 
           if (l + sin > 100) l = 100;
           else if (l + sin < 0) l = 0;

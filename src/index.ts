@@ -5,9 +5,11 @@ const led = new WiLED({
   frequency: 60,
 });
 
+led.setSpeed(0.25);
+
 led.start();
 
 led.setColor(new Color({ r: 255, g: 0, b: 0 }), {
-  mode: 'STATIC',
+  mode: 'AUTOREVERSE',
   pulsating: { pulse: 10, adjust: true },
 });
