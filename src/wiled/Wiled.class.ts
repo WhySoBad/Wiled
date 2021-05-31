@@ -124,7 +124,7 @@ export class Wiled {
     this._iteration = 0;
     this._tempHue = 0;
     this._color = color;
-    this.log(`Color set to ${color.rgb}`);
+    this.log(`Color set to`, color.rgb);
   }
 
   /**
