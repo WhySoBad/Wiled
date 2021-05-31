@@ -1,5 +1,5 @@
 import { Color } from './util/Color.class';
-import { Wiled } from './wiled/Wiled';
+import { Wiled } from './wiled/Wiled.class';
 
 const wiled: Wiled = new Wiled({
   frequency: 60,
