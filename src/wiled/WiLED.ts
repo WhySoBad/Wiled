@@ -1,9 +1,16 @@
 import { Gpio } from 'pigpio';
-import { Color } from '../../util/Color.class';
-import { HSL, RGB } from '../../util/Types.types';
-import { ColorOptions, WiLEDConstructor } from '../types/WiLED.types';
+import { Color } from '../util/Color.class';
+import { Logger } from '../util/Logger.class';
+import { HSL, RGB } from '../util/Types.types';
+import { ColorOptions, EffectMode, WiledConstructor } from './Wiled.types';
 
-export class WiLED {
+/**
+ * Wiled class
+ *
+ * @constructor WiledConstructor
+ */
+
+export class Wiled {
   /**
    * Interval frequency in Hz [repetitions/second]
    */
@@ -17,6 +24,8 @@ export class WiLED {
   public readonly pins: RGB;
 
   private _color: Color = new Color('#000000');
+
+  private _log: boolean;
 
   private _running: boolean;
 
@@ -53,9 +62,11 @@ export class WiLED {
   constructor({
     frequency = 50,
     pins = { r: 13, g: 19, b: 12 },
-  }: WiLEDConstructor) {
+    log = true,
+  }: WiledConstructor) {
     this.frequency = frequency;
     this.pins = pins;
+    this._log = log;
     this.init();
   }
 
@@ -69,6 +80,7 @@ export class WiLED {
 
   public setSpeed(speed: number): void {
     this._speed = speed;
+    this.log(`Speed set to ${speed}`);
   }
 
   /**
@@ -100,9 +112,9 @@ export class WiLED {
         ...options,
       };
       if (options.mode) {
-        this._static = options.mode === 'STATIC';
-        this._reverse = options.mode === 'REVERSE';
-        this._autoReverse = options.mode === 'AUTOREVERSE';
+        this.setStatic(options.mode === 'STATIC');
+        this.setReverse(options.mode === 'REVERSE');
+        this.setAutoReverse(options.mode === 'AUTOREVERSE');
       }
       if (typeof options.pulsating === 'object') {
         this.setPulsating(options.pulsating.pulse, options.pulsating.adjust);
@@ -112,6 +124,7 @@ export class WiLED {
     this._iteration = 0;
     this._tempHue = 0;
     this._color = color;
+    this.log(`Color set to ${color.rgb}`);
   }
 
   /**
@@ -132,6 +145,8 @@ export class WiLED {
     } else {
       this._pulsating = pulse;
       this._adjust = adjust;
+      if (this._pulsating) this.log(`Pulse set to ${pulse}`);
+      else this.log('Disabled pulse');
     }
   }
 
@@ -144,7 +159,9 @@ export class WiLED {
    */
 
   public setPulseSpeed(speed: number): void {
+    if (this._pulseSpeed === speed) return;
     this._pulseSpeed = speed;
+    this.log(`Pulse speed set to ${speed}`);
   }
 
   /**
@@ -158,8 +175,10 @@ export class WiLED {
    */
 
   public setStatic(enable: boolean, color?: Color): void {
+    if (this._static === enable) return;
     this._static = enable;
-    if (color) this._color = color;
+    this.log(`${enable ? 'Enabled' : 'Disabled'} static mode`);
+    if (color) this.setColor(color);
   }
 
   /**
@@ -173,7 +192,10 @@ export class WiLED {
    */
 
   public setReverse(enable: boolean): void {
+    if (this._reverse === enable && !this._autoReverse) return;
+    this.setAutoReverse(false);
     this._reverse = enable;
+    this.log(`${enable ? 'Enabled' : 'Disabled'} reverse mode`);
   }
 
   /**
@@ -187,7 +209,9 @@ export class WiLED {
    */
 
   public setAutoReverse(enable: boolean): void {
+    if (this._autoReverse === enable) return;
     this._autoReverse = enable;
+    this.log(`${enable ? 'Enabled' : 'Disabled'} auto reverse mode`);
   }
 
   /**
@@ -279,6 +303,17 @@ export class WiLED {
   }
 
   /**
+   * Current mode
+   */
+
+  public get mode(): EffectMode {
+    if (this._static) return 'STATIC';
+    else if (this._autoReverse) return 'AUTOREVERSE';
+    else if (this._reverse) return 'REVERSE';
+    else return 'NORMAL';
+  }
+
+  /**
    * Init function
    *
    * @returns void
@@ -292,6 +327,20 @@ export class WiLED {
     this._bPin = new Gpio(this.pins.b, { mode: Gpio.OUTPUT });
 
     //init websockets
+
+    this.log('Initialized WiLED');
+  }
+
+  /**
+   * Internal info logger
+   *
+   * @param args message
+   *
+   * @returns void
+   */
+
+  private log(...args: Array<any>): void {
+    if (this._log) Logger.Info(...args);
   }
 
   /**
@@ -301,13 +350,13 @@ export class WiLED {
    */
 
   public start(): void {
+    this.log('Started update interval');
     this._running = true;
     this._interval = setInterval(() => {
       if (this._running) {
         this._rPin.pwmWrite(this._color.rgb.r);
         this._gPin.pwmWrite(this._color.rgb.g);
         this._bPin.pwmWrite(this._color.rgb.b);
-        console.log(this._color.hex, this._color.rgb, this._color.hsl);
 
         if (this._iteration < Math.ceil((2 * Math.PI) / this._pulseSpeed)) {
           this._iteration++;
@@ -382,11 +431,14 @@ export class WiLED {
    */
 
   public stop(black: boolean = false): void {
+    this.log('Stopped update interval');
     this._running = false;
     clearInterval(this._interval);
     if (!black) return;
-    this._rPin.pwmWrite(0);
-    this._gPin.pwmWrite(0);
-    this._bPin.pwmWrite(0);
+    setTimeout(() => {
+      this._rPin.pwmWrite(0);
+      this._gPin.pwmWrite(0);
+      this._bPin.pwmWrite(0);
+    }, (1000 / this.frequency) * 1.1);
   }
 }

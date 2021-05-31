@@ -1,6 +1,6 @@
-import { RGB } from '../../util/Types.types';
+import { RGB } from '../util/Types.types';
 
-export interface WiLEDConstructor {
+export interface WiledConstructor {
   /**
    * Interval frequency in Hz [repetitions/second]
    *
@@ -17,6 +17,14 @@ export interface WiLEDConstructor {
    */
 
   pins?: RGB;
+
+  /**
+   * Enable log outputs
+   *
+   * @default true
+   */
+
+  log?: boolean;
 }
 
 export type EffectMode = 'STATIC' | 'REVERSE' | 'AUTOREVERSE' | 'NORMAL';

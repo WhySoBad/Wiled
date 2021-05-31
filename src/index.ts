@@ -1,15 +1,15 @@
 import { Color } from './util/Color.class';
-import { WiLED } from './wiled/classes/WiLED';
+import { Wiled } from './wiled/Wiled';
 
-const led = new WiLED({
+const wiled: Wiled = new Wiled({
   frequency: 60,
 });
 
-led.setSpeed(0.1);
+wiled.setSpeed(0.1);
 
-led.start();
+wiled.start();
 
-led.setColor(new Color({ r: 0, g: 255, b: 0 }), {
+wiled.setColor(new Color({ r: 0, g: 255, b: 0 }), {
   mode: 'AUTOREVERSE',
   pulsating: { pulse: 10, adjust: true },
 });
