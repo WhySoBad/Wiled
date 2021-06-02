@@ -30,8 +30,6 @@ export class Wiled {
 
   private _running: boolean;
 
-  private _interval: NodeJS.Timeout;
-
   private _rPin: Gpio;
 
   private _gPin: Gpio;
@@ -389,7 +387,7 @@ export class Wiled {
   private start(): void {
     this.log("Started update interval");
     this._running = true;
-    this._interval = setInterval(() => {
+    setInterval(() => {
       if (this._running) {
         this._rPin.pwmWrite(this._color.rgb.r);
         this._gPin.pwmWrite(this._color.rgb.g);
@@ -403,9 +401,11 @@ export class Wiled {
 
         const hsl: HSL = this._color.hsl;
 
-        if (Math.round(this.speed) === 0) this._tempHue += this._speed;
+        const temp: boolean = Math.round(this.speed) === 0;
 
-        let h: number = this._reverse ? Math.floor(hsl.h + this._tempHue) : Math.ceil(hsl.h - this._tempHue);
+        if (temp) this._tempHue += this._speed;
+
+        let h: number = this._reverse ? Math.floor(hsl.h + (temp ? this.speed : this._tempHue)) : Math.ceil(hsl.h - (temp ? this.speed : this._tempHue));
 
         if (this._tempHue >= 1) this._tempHue -= 1;
 
