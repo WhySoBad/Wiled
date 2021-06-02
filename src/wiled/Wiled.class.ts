@@ -405,7 +405,7 @@ export class Wiled {
 
         if (temp) this._tempHue += this._speed;
 
-        let h: number = this._reverse ? Math.floor(hsl.h + (temp ? this.speed : this._tempHue)) : Math.ceil(hsl.h - (temp ? this.speed : this._tempHue));
+        let h: number = this._reverse ? Math.floor(hsl.h + (temp ? this._tempHue : this.speed)) : Math.ceil(hsl.h - (temp ? this._tempHue : this.speed));
 
         if (this._tempHue >= 1) this._tempHue -= 1;
 
