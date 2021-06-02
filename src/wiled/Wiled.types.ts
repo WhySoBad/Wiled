@@ -1,4 +1,4 @@
-import { RGB } from '../util/Types.types';
+import { RGB } from "../util/Types.types";
 
 export interface WiledConstructor {
   /**
@@ -25,9 +25,17 @@ export interface WiledConstructor {
    */
 
   log?: boolean;
+
+  /**
+   * Start local server
+   *
+   * @default false
+   */
+
+  server?: boolean | { port: number };
 }
 
-export type EffectMode = 'STATIC' | 'REVERSE' | 'AUTOREVERSE' | 'NORMAL';
+export type EffectMode = "STATIC" | "REVERSE" | "AUTOREVERSE" | "NORMAL";
 
 export interface ColorOptions {
   /**

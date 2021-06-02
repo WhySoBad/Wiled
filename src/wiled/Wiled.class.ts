@@ -1,8 +1,10 @@
-import { Gpio } from 'pigpio';
-import { Color } from '../util/Color.class';
-import { Logger } from '../util/Logger.class';
-import { HSL, RGB } from '../util/Types.types';
-import { ColorOptions, EffectMode, WiledConstructor } from './Wiled.types';
+import { Gpio } from "pigpio";
+import { isFunctionDeclaration } from "typescript";
+import { Server } from "../server/Server.class";
+import { Color } from "../util/Color.class";
+import { Logger } from "../util/Logger.class";
+import { HSL, RGB } from "../util/Types.types";
+import { ColorOptions, EffectMode, WiledConstructor } from "./Wiled.types";
 
 /**
  * Wiled class
@@ -23,7 +25,7 @@ export class Wiled {
 
   public readonly pins: RGB;
 
-  private _color: Color = new Color('#000000');
+  private _color: Color = new Color("#000000");
 
   private _log: boolean;
 
@@ -59,14 +61,16 @@ export class Wiled {
 
   private _tempHue: number = 0;
 
-  constructor({
-    frequency = 50,
-    pins = { r: 13, g: 19, b: 12 },
-    log = true,
-  }: WiledConstructor) {
+  private _server: Server;
+
+  constructor({ frequency = 50, pins = { r: 13, g: 19, b: 12 }, log = true, server = false }: WiledConstructor) {
     this.frequency = frequency;
     this.pins = pins;
     this._log = log;
+    if (server) {
+      if (typeof server === "object") this._server = new Server(this, { port: server.port });
+      else this._server = new Server(this);
+    }
     this.init();
   }
 
@@ -97,13 +101,7 @@ export class Wiled {
     if (options) {
       options = {
         ...{
-          mode: this._static
-            ? 'STATIC'
-            : this._autoReverse
-            ? 'AUTOREVERSE'
-            : this._reverse
-            ? 'REVERSE'
-            : 'NORMAL',
+          mode: this._static ? "STATIC" : this._autoReverse ? "AUTOREVERSE" : this._reverse ? "REVERSE" : "NORMAL",
           pulsating: this._pulsating && {
             pulse: this._pulsating,
             adjust: this._adjust,
@@ -111,12 +109,8 @@ export class Wiled {
         },
         ...options,
       };
-      if (options.mode) {
-        this.setStatic(options.mode === 'STATIC');
-        this.setReverse(options.mode === 'REVERSE');
-        this.setAutoReverse(options.mode === 'AUTOREVERSE');
-      }
-      if (typeof options.pulsating === 'object') {
+      if (options.mode) this.setMode(options.mode);
+      if (typeof options.pulsating === "object") {
         this.setPulsating(options.pulsating.pulse, options.pulsating.adjust);
       } else this.setPulsating(options.pulsating || false, false);
     }
@@ -140,13 +134,13 @@ export class Wiled {
    */
 
   public setPulsating(pulse: false | number, adjust: boolean = false): void {
-    if (typeof pulse === 'number' && (pulse > 50 || pulse < -50)) {
-      throw new Error('Pulse has to be in range of -50 and 50');
+    if (typeof pulse === "number" && (pulse > 50 || pulse < -50)) {
+      throw new Error("Pulse has to be in range of -50 and 50");
     } else {
       this._pulsating = pulse;
       this._adjust = adjust;
       if (this._pulsating) this.log(`Pulse set to ${pulse}`);
-      else this.log('Disabled pulse');
+      else this.log("Disabled pulse");
     }
   }
 
@@ -177,7 +171,7 @@ export class Wiled {
   public setStatic(enable: boolean, color?: Color): void {
     if (this._static === enable) return;
     this._static = enable;
-    this.log(`${enable ? 'Enabled' : 'Disabled'} static mode`);
+    this.log(`${enable ? "Enabled" : "Disabled"} static mode`);
     if (color) this.setColor(color);
   }
 
@@ -195,7 +189,7 @@ export class Wiled {
     if (this._reverse === enable && !this._autoReverse) return;
     this.setAutoReverse(false);
     this._reverse = enable;
-    this.log(`${enable ? 'Enabled' : 'Disabled'} reverse mode`);
+    this.log(`${enable ? "Enabled" : "Disabled"} reverse mode`);
   }
 
   /**
@@ -211,7 +205,21 @@ export class Wiled {
   public setAutoReverse(enable: boolean): void {
     if (this._autoReverse === enable) return;
     this._autoReverse = enable;
-    this.log(`${enable ? 'Enabled' : 'Disabled'} auto reverse mode`);
+    this.log(`${enable ? "Enabled" : "Disabled"} auto reverse mode`);
+  }
+
+  /**
+   * Change current mode
+   *
+   * @param mode new mode
+   *
+   * @returns void
+   */
+
+  public setMode(mode: EffectMode): void {
+    this.setStatic(mode === "STATIC");
+    this.setReverse(mode === "REVERSE");
+    this.setAutoReverse(mode === "AUTOREVERSE");
   }
 
   /**
@@ -307,10 +315,38 @@ export class Wiled {
    */
 
   public get mode(): EffectMode {
-    if (this._static) return 'STATIC';
-    else if (this._autoReverse) return 'AUTOREVERSE';
-    else if (this._reverse) return 'REVERSE';
-    else return 'NORMAL';
+    if (this._static) return "STATIC";
+    else if (this._autoReverse) return "AUTOREVERSE";
+    else if (this._reverse) return "REVERSE";
+    else return "NORMAL";
+  }
+
+  /**
+   * Current pulse amplitude
+   */
+
+  public get pulseAmplitude(): number | null {
+    return this._pulsating || null;
+  }
+
+  /**
+   * Boolean whether logs are enabled or not
+   */
+
+  public get logsEnabled(): boolean {
+    return this._log;
+  }
+
+  /**
+   * Short function to turn the lights off
+   *
+   * Sets the color to black
+   *
+   * @returns void
+   */
+
+  public off(): void {
+    this.setColor(new Color("#000000"));
   }
 
   /**
@@ -328,7 +364,9 @@ export class Wiled {
 
     //init websockets
 
-    this.log('Initialized WiLED');
+    this.log("Initialized WiLED");
+
+    this.start();
   }
 
   /**
@@ -349,8 +387,8 @@ export class Wiled {
    * @returns void
    */
 
-  public start(): void {
-    this.log('Started update interval');
+  private start(): void {
+    this.log("Started update interval");
     this._running = true;
     this._interval = setInterval(() => {
       if (this._running) {
@@ -368,9 +406,7 @@ export class Wiled {
 
         if (Math.round(this.speed) === 0) this._tempHue += this._speed;
 
-        let h: number = this._reverse
-          ? Math.floor(hsl.h + this._tempHue)
-          : Math.ceil(hsl.h - this._tempHue);
+        let h: number = this._reverse ? Math.floor(hsl.h + this._tempHue) : Math.ceil(hsl.h - this._tempHue);
 
         if (this._tempHue >= 1) this._tempHue -= 1;
 
@@ -416,29 +452,5 @@ export class Wiled {
         });
       }
     }, 1000 / this.frequency);
-  }
-
-  /**
-   * Function to stop the update interval and turn
-   *
-   * the leds off
-   *
-   * @param black boolean whether the leds should be turned black or not
-   *
-   * @default false
-   *
-   * @returns void
-   */
-
-  public stop(black: boolean = false): void {
-    this.log('Stopped update interval');
-    this._running = false;
-    clearInterval(this._interval);
-    if (!black) return;
-    setTimeout(() => {
-      this._rPin.pwmWrite(0);
-      this._gPin.pwmWrite(0);
-      this._bPin.pwmWrite(0);
-    }, (1000 / this.frequency) * 1.1);
   }
 }
