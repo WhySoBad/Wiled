@@ -4,7 +4,8 @@
   "description": "Wireless LED library for raspberry pi 4",
   "main": "src/index.ts",
   "scripts": {
-    "start": "tsc && node dist/index.js"
+    "start": "tsc && node dist/index.js",
+    "start:sudo": "tsc && sudo node dist/index.js"
   },
   "author": "WhySoBad",
   "license": "MIT",
