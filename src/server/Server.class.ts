@@ -16,6 +16,9 @@ export class Server extends EventEmitter {
     this._wiled = wiled;
     this._app = express();
 
+    this._app.use(express.json());
+    this._app.use(express.urlencoded());
+
     this._app.get("/", (request: Request, response: Response) => {
       const color: Color = this._wiled.color;
       response.send({

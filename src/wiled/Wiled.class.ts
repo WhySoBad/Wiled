@@ -1,5 +1,4 @@
 import { Gpio } from "pigpio";
-import { isFunctionDeclaration } from "typescript";
 import { Server } from "../server/Server.class";
 import { Color } from "../util/Color.class";
 import { Logger } from "../util/Logger.class";
