@@ -401,7 +401,7 @@ export class Wiled {
 
         const hsl: HSL = this._color.hsl;
 
-        const temp: boolean = Math.round(this.speed) === 0;
+        const temp: boolean = Math.floor(this.speed) === 0;
 
         if (temp) this._tempHue += this._speed;
 
