@@ -322,8 +322,8 @@ export class Wiled {
    * Current pulse amplitude
    */
 
-  public get pulseAmplitude(): number | null {
-    return this._pulsating || null;
+  public get pulseAmplitude(): number {
+    return this._pulsating || 0;
   }
 
   /**
