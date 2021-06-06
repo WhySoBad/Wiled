@@ -343,7 +343,26 @@ export class Wiled {
    */
 
   public off(): void {
-    this.setColor(new Color("#000000"));
+    if (!this._running) return;
+    this._running = false;
+    this._rPin.pwmWrite(0);
+    this._gPin.pwmWrite(0);
+    this._bPin.pwmWrite(0);
+    this.log("Turned leds off");
+  }
+
+  /**
+   * Function to continue the light effect and
+   *
+   * turn the leds back on after turning them off
+   *
+   * @returns void
+   */
+
+  public continue(): void {
+    if (this._running) return;
+    this._running = true;
+    this.log("Continued led effect");
   }
 
   /**

@@ -35,6 +35,20 @@ export class Server extends EventEmitter {
       });
     });
 
+    this._app.get("/off", (request: Request, response: Response) => {
+      if (this._wiled.isRunning) {
+        this._wiled.off();
+        response.send();
+      } else response.status(409).send({ message: "Leds are already turned off" });
+    });
+
+    this._app.get("/continue", (request: Request, response: Response) => {
+      if (!this._wiled.isRunning) {
+        this._wiled.continue();
+        response.send();
+      } else response.status(409).send({ message: "Leds are already turned on" });
+    });
+
     this._app.post("/mode", (request: Request, response: Response) => {
       const body = request.body;
       const mode: EffectMode = body.mode;
