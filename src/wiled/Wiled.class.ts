@@ -60,7 +60,7 @@ export class Wiled {
 
   private _server: Server;
 
-  constructor({ frequency = 50, pins = { r: 13, g: 19, b: 12 }, log = true, server = false }: WiledConstructor) {
+  constructor({ frequency = 50, pins = { r: 13, g: 19, b: 12 }, log = true, server = false }: WiledConstructor = { frequency: 50, pins: { r: 13, g: 19, b: 12 }, log: true, server: false }) {
     this.frequency = frequency;
     this.pins = pins;
     this._log = log;
