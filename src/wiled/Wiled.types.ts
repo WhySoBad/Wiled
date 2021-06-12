@@ -1,3 +1,4 @@
+import { Color } from "../util/Color.class";
 import { RGB } from "../util/Types.types";
 
 export interface WiledConstructor {
@@ -33,6 +34,14 @@ export interface WiledConstructor {
    */
 
   server?: boolean | { port: number };
+
+  /**
+   * Start color of the LEDs
+   *
+   * @default #000000
+   */
+
+  color?: Color;
 }
 
 export type EffectMode = "STATIC" | "REVERSE" | "AUTOREVERSE" | "NORMAL";

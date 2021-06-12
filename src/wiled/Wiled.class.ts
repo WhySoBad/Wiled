@@ -30,7 +30,7 @@ export class Wiled {
 
   public readonly server: Server;
 
-  private _color: Color = new Color("#000000");
+  private _color: Color;
 
   private _log: boolean;
 
@@ -64,10 +64,19 @@ export class Wiled {
 
   private _tempHue: number = 0;
 
-  constructor({ frequency = 50, pins = { r: 13, g: 19, b: 12 }, log = true, server = false }: WiledConstructor = { frequency: 50, pins: { r: 13, g: 19, b: 12 }, log: true, server: false }) {
+  constructor(
+    { frequency = 50, pins = { r: 13, g: 19, b: 12 }, log = true, server = false, color = new Color("#000000") }: WiledConstructor = {
+      frequency: 50,
+      pins: { r: 13, g: 19, b: 12 },
+      log: true,
+      server: false,
+      color: new Color("#000000"),
+    }
+  ) {
     this.frequency = frequency;
     this.pins = pins;
     this._log = log;
+    this.setColor(color);
     if (server) {
       if (typeof server === "object") this.server = new Server(this, { port: server.port });
       else this.server = new Server(this);
@@ -412,9 +421,9 @@ export class Wiled {
     this._running = true;
     setInterval(() => {
       if (this._running) {
-        this._rPin.pwmWrite(this._color.rgb.r);
-        this._gPin.pwmWrite(this._color.rgb.g);
-        this._bPin.pwmWrite(this._color.rgb.b);
+        this._rPin.pwmWrite(this._color.rgb?.r);
+        this._gPin.pwmWrite(this._color.rgb?.g);
+        this._bPin.pwmWrite(this._color.rgb?.b);
 
         if (this._iteration < Math.ceil((2 * Math.PI) / this._pulseSpeed)) {
           this._iteration++;
