@@ -136,4 +136,32 @@ export class Server extends EventEmitter {
       this._wiled.logsEnabled && Logger.Info(`Server started on port ${port}`);
     });
   }
+
+  /**
+   * Add custom get request
+   *
+   * @param path path of the request [e.g. /mode]
+   *
+   * @param handler handler for the request
+   *
+   * @returns void
+   */
+
+  public get(path: string, handler: (request: Request, response: Response) => void): void {
+    this._app.get(path, handler);
+  }
+
+  /**
+   * Add custom post request
+   *
+   * @param path path of the request [e.g. /mode]
+   *
+   * @param handler handler for the request
+   *
+   * @returns void
+   */
+
+  public post(path: string, handler: (request: Request, response: Response) => void): void {
+    this._app.post(path, handler);
+  }
 }

@@ -24,6 +24,12 @@ export class Wiled {
 
   public readonly pins: RGB;
 
+  /**
+   * Integrated http server
+   */
+
+  public readonly server: Server;
+
   private _color: Color = new Color("#000000");
 
   private _log: boolean;
@@ -58,15 +64,13 @@ export class Wiled {
 
   private _tempHue: number = 0;
 
-  private _server: Server;
-
   constructor({ frequency = 50, pins = { r: 13, g: 19, b: 12 }, log = true, server = false }: WiledConstructor = { frequency: 50, pins: { r: 13, g: 19, b: 12 }, log: true, server: false }) {
     this.frequency = frequency;
     this.pins = pins;
     this._log = log;
     if (server) {
-      if (typeof server === "object") this._server = new Server(this, { port: server.port });
-      else this._server = new Server(this);
+      if (typeof server === "object") this.server = new Server(this, { port: server.port });
+      else this.server = new Server(this);
     }
     this.init();
   }
