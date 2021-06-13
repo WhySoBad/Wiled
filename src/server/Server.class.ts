@@ -133,7 +133,17 @@ export class Server extends EventEmitter {
     });
 
     this._app.listen(port, () => {
-      this._wiled.logsEnabled && Logger.Info(`Server started on port ${port}`);
+      if (this._wiled.logsEnabled) {
+        Logger.Info(`Server started on port ${port}`);
+        Logger.Info(`Added "/" route [GET]`);
+        Logger.Info(`Added "/off" route [GET]`);
+        Logger.Info(`Added "/continue" route [GET]`);
+        Logger.Info(`Added "/mode" route [POST]`);
+        Logger.Info(`Added "/speed" route [POST]`);
+        Logger.Info(`Added "/pulsespeed" route [POST]`);
+        Logger.Info(`Added "/color" route [POST] `);
+        Logger.Info(`Added "/amplitude" route [POST]`);
+      }
     });
   }
 
@@ -149,6 +159,7 @@ export class Server extends EventEmitter {
 
   public get(path: string, handler: (request: Request, response: Response) => void): void {
     this._app.get(path, handler);
+    this._wiled.logsEnabled && Logger.Info(`Added "/${path}" route [GET]`);
   }
 
   /**
@@ -163,5 +174,6 @@ export class Server extends EventEmitter {
 
   public post(path: string, handler: (request: Request, response: Response) => void): void {
     this._app.post(path, handler);
+    this._wiled.logsEnabled && Logger.Info(`Added "/${path}" route [POST]`);
   }
 }
