@@ -67,5 +67,5 @@ const time = (): string => {
   const hours: string = now.getUTCHours() < 10 ? `0${now.getUTCHours()}` : now.getUTCHours().toString();
   const minutes: string = now.getUTCMinutes() < 10 ? `0${now.getUTCMinutes()}` : now.getUTCMinutes().toString();
   const seconds: string = now.getUTCSeconds() < 10 ? `0${now.getUTCSeconds()}` : now.getUTCSeconds().toString();
-  return `[${date}.${month}.${year} | ${hours}.${minutes}.${seconds}]`;
+  return `[${date}.${month}.${year} | ${hours}:${minutes}:${seconds}]`;
 };

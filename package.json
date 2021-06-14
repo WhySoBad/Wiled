@@ -1,12 +1,15 @@
 {
   "name": "wiled",
   "version": "1.0.0",
-  "description": "Wireless LED library for raspberry pi 4",
-  "main": "src/index.ts",
+  "description": "Wireless RGB LED library for nodejs",
+  "main": "dist/src/index.js",
   "scripts": {
-    "start": "tsc && node dist/index.js",
-    "start:sudo": "tsc && sudo node dist/index.js"
+    "start": "tsc && node dist/example/setup.js",
+    "start:sudo": "tsc && sudo node dist/example/setup.js"
   },
+  "files": [
+    "dist/src"
+  ],
   "author": "WhySoBad",
   "license": "MIT",
   "dependencies": {
