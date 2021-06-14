@@ -12,6 +12,9 @@
   ],
   "author": "WhySoBad",
   "license": "MIT",
+  "homepage": "https://github.com/WhySoBad/Wiled",
+  "repository": "https://github.com/WhySoBad/Wiled",
+  "readme": "https://github.com/WhySoBad/Wiled#readme",
   "dependencies": {
     "@types/express": "^4.17.12",
     "@types/rpio": "^2.4.1",
