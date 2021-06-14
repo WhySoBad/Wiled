@@ -1,6 +1,6 @@
 {
   "name": "wiled",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Wireless RGB LED library for nodejs",
   "main": "dist/src/index.js",
   "scripts": {
